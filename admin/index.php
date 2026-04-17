@@ -10,7 +10,7 @@ $q_total = mysqli_query($koneksi, "
 ");
 $total = mysqli_fetch_assoc($q_total);
 
-// MASIH PARKIR (belum keluar)
+// MASIH PARKIR
 $q_parkir = mysqli_query($koneksi, "
     SELECT COUNT(*) as parkir 
     FROM t_parkir 
@@ -27,7 +27,7 @@ $q_pendapatan = mysqli_query($koneksi, "
 $pendapatan = mysqli_fetch_assoc($q_pendapatan);
 $total_pendapatan = $pendapatan['total'] ?? 0;
 
-// DATA TABEL (JOIN jenis kendaraan)
+// DATA
 $data = mysqli_query($koneksi, "
     SELECT p.*, j.nama_jenis 
     FROM t_parkir p
@@ -42,11 +42,29 @@ $data = mysqli_query($koneksi, "
 <head>
     <title>Admin - Dashboard</title>
 
+    <!-- TAMBAHAN ICON -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
     <style>
     body {
         margin: 0;
         font-family: Arial;
         background: #f5f5f5;
+    }
+
+    /* TAMBAHAN ICON CARD */
+    .card {
+        position: relative;
+    }
+
+    .card-icon {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 20px;
+        background: #FFDE42;
+        padding: 8px;
+        border-radius: 8px;
     }
 
     .cards {
@@ -114,20 +132,25 @@ $data = mysqli_query($koneksi, "
 
 <!-- CARDS -->
 <div class="cards">
+
     <div class="card">
+        <i class="bi bi-bicycle card-icon"></i>
         <h3>Total Kendaraan Hari Ini</h3>
         <div class="angka"><?= $total['total'] ?></div>
     </div>
 
     <div class="card">
+        <i class="bi bi-clock-history card-icon"></i>
         <h3>Kendaraan Masih Parkir</h3>
         <div class="angka"><?= $parkir['parkir'] ?></div>
     </div>
 
     <div class="card">
+        <i class="bi bi-cash-stack card-icon"></i>
         <h3>Total Pendapatan</h3>
         <div class="angka">Rp <?= number_format($total_pendapatan,0,',','.') ?></div>
     </div>
+
 </div>
 
 <!-- TABLE -->
@@ -173,7 +196,7 @@ $data = mysqli_query($koneksi, "
     </table>
 </div>
 
-</div> <!-- penutup main-content dari header -->
+</div>
 
 </body>
 </html>

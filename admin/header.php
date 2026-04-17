@@ -35,6 +35,11 @@
     margin: 5px;
 }
 
+/* TAMBAHAN ICON MENU */
+.sidebar a i {
+    margin-right: 10px;
+}
+
 /* MAIN */
 .main-content {
     margin-left: 220px;
@@ -62,12 +67,14 @@
 
 <div class="sidebar">
     <h2>E-Parking<br>System</h2>
-    <a href="index.php" class="active">Dashboard</a>
-    <a href="#">Data User</a>
-    <a href="#">Jenis Kendaraan</a>
-    <a href="#">Pembayaran</a>
-    <a href="#">Laporan</a>
-    <a href="../logout.php" style="margin-top:50px;">Logout</a>
+
+    <!-- MENU (SUDAH ADA ICON + LINK) -->
+    <a href="index.php" class="active"><i class="bi bi-house-door"></i> Dashboard</a>
+    <a href="data_user.php"><i class="bi bi-people"></i> Data User</a>
+    <a href="jenis_kendaraan.php"><i class="bi bi-bicycle"></i> Jenis Kendaraan</a>
+    <a href="pembayaran.php"><i class="bi bi-cash"></i> Pembayaran</a>
+    <a href="laporan.php"><i class="bi bi-file-earmark-text"></i> Laporan</a>
+    <a href="../logout.php" style="margin-top:50px;"><i class="bi bi-box-arrow-right"></i> Logout</a>
 </div>
 
 <div class="main-content">
