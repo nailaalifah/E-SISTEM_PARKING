@@ -199,12 +199,27 @@ while($row = mysqli_fetch_assoc($data)){ ?>
         <?php } ?>
     </td>
 
+   <tr>
+    <td><?= $no++; ?></td>
+    <td><?= $row['plat_nomor']; ?></td>
+    <td><?= $row['nama_jenis']; ?></td>
+    <td><?= $row['waktu_masuk']; ?></td>
     <td>
-        <?php if($row['status']=='masuk'){ ?>
-            <a href="edit.php?id=<?= $row['id_parkir'] ?>"><i class="bi bi-pencil"></i></a>
+        <?php if($row['status'] == 'parkir'){ ?>
+            <span class="badge bg-warning text-dark">Parkir</span>
+        <?php } else { ?>
+            <span class="badge bg-danger">Keluar</span>
         <?php } ?>
-        <a href="print.php?id=<?= $row['id_parkir'] ?>"><i class="bi bi-printer"></i></a>
     </td>
+    <td>
+        <?php if($row['status'] == 'parkir'){ ?>
+            <a href="edit_transaksi.php?id=<?= $row['id_parkir']; ?>" class="btn btn-sm btn-info">Edit</a>
+            <a href="cetak_masuk.php?id=<?= $row['id_parkir']; ?>" target="_blank" class="btn btn-sm btn-success">Cetak</a>
+        <?php } else { ?>
+            <a href="cetak_struk_final.php?id=<?= $row['id_parkir']; ?>" target="_blank" class="btn btn-sm btn-secondary">Cetak Struk</a>
+        <?php } ?>
+    </td>
+</tr>
 </tr>
 <?php } ?>
 
