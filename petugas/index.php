@@ -2,7 +2,7 @@
 session_start();
 include '../koneksi.php';
 
-// TOTAL HARI INI
+// TOTAL KENDARAAN HARI INI
 $q_total = mysqli_query($koneksi, "
     SELECT COUNT(*) as total 
     FROM t_parkir 
@@ -14,11 +14,11 @@ $total = mysqli_fetch_assoc($q_total);
 $q_parkir = mysqli_query($koneksi, "
     SELECT COUNT(*) as parkir 
     FROM t_parkir 
-    WHERE status='masuk'
+    WHERE status='masuk' AND DATE(waktu_masuk)=CURDATE()
 ");
 $parkir = mysqli_fetch_assoc($q_parkir);
 
-// KAPASITAS (ambil dari jenis kendaraan motor id=1)
+// KAPASITAS
 $q_kapasitas = mysqli_query($koneksi, "
     SELECT kapasitas FROM t_jenis_kendaraan WHERE id_jenis=1
 ");
@@ -26,12 +26,12 @@ $kap = mysqli_fetch_assoc($q_kapasitas);
 
 $sisa_kapasitas = $kap['kapasitas'] - $parkir['parkir'];
 
-// DATA TABEL
+// DATA HARI INI
 $data = mysqli_query($koneksi, "
     SELECT p.*, j.nama_jenis 
     FROM t_parkir p
-    LEFT JOIN t_jenis_kendaraan j 
-    ON p.id_jenis = j.id_jenis
+    LEFT JOIN t_jenis_kendaraan j ON p.id_jenis = j.id_jenis
+    WHERE DATE(p.waktu_masuk)=CURDATE()
     ORDER BY p.id_parkir DESC
 ");
 ?>
@@ -50,7 +50,6 @@ body {
     background: #f5f5f5;
 }
 
-/* BUTTON ATAS */
 .top-action {
     display: flex;
     justify-content: space-between;
@@ -65,7 +64,6 @@ body {
     text-decoration: none;
 }
 
-/* CARD */
 .cards {
     display: flex;
     gap: 20px;
@@ -95,7 +93,6 @@ body {
     color: orange;
 }
 
-/* TABLE */
 .table-container {
     padding: 20px;
 }
@@ -132,6 +129,18 @@ tr:nth-child(even) {
     padding: 5px 10px;
     border-radius: 10px;
 }
+
+.btn-sm {
+    padding: 5px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: white;
+    font-size: 12px;
+}
+
+.btn-edit { background: #17a2b8; }
+.btn-print { background: #28a745; }
+.btn-final { background: #6c757d; }
 </style>
 </head>
 
@@ -139,13 +148,15 @@ tr:nth-child(even) {
 
 <?php include 'header.php'; ?>
 
-<!-- BUTTON -->
 <div class="top-action">
-    <a href="transaksi_masuk.php" class="btn"><i class="bi bi-plus-circle"></i> Transaksi Masuk</a>
-    <a href="#" class="btn"><i class="bi bi-camera"></i> Scan Keluar</a>
+    <a href="transaksi_masuk.php" class="btn">
+        <i class="bi bi-plus-circle"></i> Transaksi Masuk
+    </a>
+    <a href="#" class="btn">
+        <i class="bi bi-camera"></i> Scan Keluar
+    </a>
 </div>
 
-<!-- CARD -->
 <div class="cards">
 
 <div class="card">
@@ -168,7 +179,6 @@ tr:nth-child(even) {
 
 </div>
 
-<!-- TABLE -->
 <div class="table-container">
 <h3>Riwayat Transaksi Hari Ini</h3>
 
@@ -183,13 +193,13 @@ tr:nth-child(even) {
 </tr>
 
 <?php 
-$no=1;
+$no = 1;
 while($row = mysqli_fetch_assoc($data)){ ?>
 <tr>
-    <td><?= $no++ ?></td>
-    <td><?= $row['plat_nomor'] ?></td>
-    <td><?= $row['nama_jenis'] ?></td>
-    <td><?= $row['waktu_masuk'] ?></td>
+    <td><?= $no++; ?></td>
+    <td><?= $row['plat_nomor']; ?></td>
+    <td><?= $row['nama_jenis']; ?></td>
+    <td><?= $row['waktu_masuk']; ?></td>
 
     <td>
         <?php if($row['status']=='masuk'){ ?>
@@ -199,33 +209,25 @@ while($row = mysqli_fetch_assoc($data)){ ?>
         <?php } ?>
     </td>
 
-   <tr>
-    <td><?= $no++; ?></td>
-    <td><?= $row['plat_nomor']; ?></td>
-    <td><?= $row['nama_jenis']; ?></td>
-    <td><?= $row['waktu_masuk']; ?></td>
     <td>
-        <?php if($row['status'] == 'parkir'){ ?>
-            <span class="badge bg-warning text-dark">Parkir</span>
-        <?php } else { ?>
-            <span class="badge bg-danger">Keluar</span>
-        <?php } ?>
+    <?php if($row['status']=='masuk'){ ?>
+        <a href="edit_transaksi.php?id=<?= $row['id_parkir'] ?>" class="btn-sm btn-edit">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        <a href="ambil_tiket.php?id=<?= $row['id_parkir'] ?>" target="_blank" class="btn-sm btn-print">
+            <i class="bi bi-printer"></i> Cetak
+        </a>
+    <?php } else { ?>
+        <a href="ambil_tiket_keluar.php?id=<?= $row['id_parkir'] ?>" target="_blank" class="btn-sm btn-final">
+            <i class="bi bi-printer"></i> Print
+        </a>
+    <?php } ?>
     </td>
-    <td>
-        <?php if($row['status'] == 'parkir'){ ?>
-            <a href="edit_transaksi.php?id=<?= $row['id_parkir']; ?>" class="btn btn-sm btn-info">Edit</a>
-            <a href="cetak_masuk.php?id=<?= $row['id_parkir']; ?>" target="_blank" class="btn btn-sm btn-success">Cetak</a>
-        <?php } else { ?>
-            <a href="cetak_struk_final.php?id=<?= $row['id_parkir']; ?>" target="_blank" class="btn btn-sm btn-secondary">Cetak Struk</a>
-        <?php } ?>
-    </td>
-</tr>
+
 </tr>
 <?php } ?>
 
 </table>
-
-</div>
 
 </div>
 
