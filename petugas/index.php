@@ -152,7 +152,7 @@ tr:nth-child(even) {
     <a href="transaksi_masuk.php" class="btn">
         <i class="bi bi-plus-circle"></i> Transaksi Masuk
     </a>
-    <a href="#" class="btn">
+    <a href="scan_keluar.php" class="btn">
         <i class="bi bi-camera"></i> Scan Keluar
     </a>
 </div>
