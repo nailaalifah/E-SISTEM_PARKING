@@ -1,4 +1,15 @@
 <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+    }
+
+    body {
+        background-color: #ffffff;
+        min-height: 100vh;
+    }
     :root {
         --sidebar-green: #346739;
         --sidebar-light: #79AE6F;
@@ -14,11 +25,13 @@
         background: linear-gradient(to bottom, var(--sidebar-green), var(--sidebar-light));
         color: white;
         padding-top: 20px;
+        z-index: 100;
     }
 
     .sidebar h2 {
         text-align: center;
         margin-bottom: 30px;
+        font-size: 20px;
     }
 
     .sidebar a {
@@ -26,6 +39,7 @@
         padding: 15px 20px;
         color: white;
         text-decoration: none;
+        transition: 0.3s;
     }
 
     .sidebar a.active {
@@ -44,6 +58,7 @@
     /* MAIN */
     .main-content {
         margin-left: 220px;
+        min-height: 100vh;
     }
 
     /* HEADER */
@@ -54,6 +69,7 @@
         justify-content: space-between;
         align-items: center;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
     }
 
     .header-title {
@@ -63,6 +79,11 @@
 
     .header-logo {
         width: 50px;
+    }
+
+    /* CONTAINER & BUTTON */
+    .container {
+        padding: 0 30px;
     }
 </style>
 
