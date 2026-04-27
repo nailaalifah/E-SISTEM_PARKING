@@ -11,16 +11,16 @@ $tahun   = isset($_GET['tahun']) ? $_GET['tahun'] : date('Y');
 if($jenis == 'harian'){
     $q = mysqli_query($koneksi,"
         SELECT p.*, u.nama 
-        FROM parkir p
-        JOIN users u ON p.id_user = u.id_user
+        FROM t_parkir p
+        JOIN t_user u ON p.id_user = u.id_user
         WHERE DATE(p.waktu_masuk) = '$tanggal'
         ORDER BY p.waktu_masuk DESC
     ");
 }else{
     $q = mysqli_query($koneksi,"
         SELECT p.*, u.nama 
-        FROM parkir p
-        JOIN users u ON p.id_user = u.id_user
+        FROM t_parkir p
+        JOIN t_user u ON p.id_user = u.id_user
         WHERE MONTH(p.waktu_masuk) = '$bulan'
         AND YEAR(p.waktu_masuk) = '$tahun'
         ORDER BY p.waktu_masuk DESC

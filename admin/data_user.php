@@ -115,7 +115,7 @@ text-decoration:none;
 </tr>
 
 <?php
-$data = mysqli_query($koneksi,"SELECT * FROM users");
+$data = mysqli_query($koneksi,"SELECT * FROM t_user");
 while($d=mysqli_fetch_array($data)){
 ?>
 
