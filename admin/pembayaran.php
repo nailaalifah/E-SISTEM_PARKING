@@ -221,6 +221,35 @@
         font-size: 13px;
         cursor: pointer;
     }
+
+    @media print {
+    /* Sembunyikan Sidebar, Header Kuning, Form Filter, dan Tombol-tombol */
+    .sidebar, .header, .filter-section, .table-footer, .btn-action {
+        display: none !important;
+    }
+    
+    /* Lebarkan konten utama agar memenuhi kertas */
+    .main-content {
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+
+    .summary-container {
+        display: flex !important;
+        gap: 10px;
+    }
+
+    .summary-card {
+        border: 1px solid #000 !important;
+        background: none !important;
+    }
+    
+    .parking-table th {
+        background-color: #4D5D30 !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact;
+    }
+}
 </style>
 
 <head>
@@ -260,16 +289,15 @@
         $where_clause .= " AND (pk.plat_nomor LIKE '%$search%' OR p.id_parkir LIKE '%$search%')";
     }
 
-    // Query untuk 4 Kotak Ringkasan (Menghitung Pendapatan Bersih: bayar - kembalian)
-    $sql_ringkasan = "SELECT 
-        SUM(p.jumlah_bayar - p.kembalian) as total_masuk,
+    // Query Ringkasan: Menghitung Pendapatan Bersih (Bayar dikurangi Kembalian)
+   $sql_ringkasan = "SELECT 
+        SUM(CASE WHEN p.kembalian < 0 THEN p.jumlah_bayar ELSE (p.jumlah_bayar - p.kembalian) END) as total_masuk, 
         COUNT(*) as jml_transaksi,
-        SUM(CASE WHEN p.metode_pembayaran = 'QRIS' THEN (p.jumlah_bayar - p.kembalian) ELSE 0 END) as total_qris,
-        SUM(CASE WHEN p.metode_pembayaran = 'Tunai' THEN (p.jumlah_bayar - p.kembalian) ELSE 0 END) as total_tunai
+        SUM(CASE WHEN p.metode_pembayaran = 'QRIS' THEN (CASE WHEN p.kembalian < 0 THEN p.jumlah_bayar ELSE (p.jumlah_bayar - p.kembalian) END) ELSE 0 END) as total_qris,
+        SUM(CASE WHEN p.metode_pembayaran = 'Tunai' THEN (CASE WHEN p.kembalian < 0 THEN p.jumlah_bayar ELSE (p.jumlah_bayar - p.kembalian) END) ELSE 0 END) as total_tunai
         FROM t_pembayaran p
         LEFT JOIN t_parkir pk ON p.id_parkir = pk.id_parkir 
         $where_clause";
-
     $q_ringkasan = mysqli_query($koneksi, $sql_ringkasan);
     $res = mysqli_fetch_assoc($q_ringkasan);
 
