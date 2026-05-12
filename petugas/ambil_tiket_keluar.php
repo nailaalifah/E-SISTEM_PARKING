@@ -1,18 +1,30 @@
 <?php
+// Pastikan tidak ada spasi/enter di atas tag <?php
 session_start();
 include '../koneksi.php';
 
-// Ambil ID Parkir dari URL
-$id_parkir = $_GET['id']; 
+// 1. Ambil ID Parkir dari URL
+$id_parkir = isset($_GET['id']) ? mysqli_real_escape_string($koneksi, $_GET['id']) : '';
 
-// Query gabungan 4 tabel sesuai database kamu (huruf kecil semua)
-// t_parkir, t_jenis_kendaraan, t_user, t_pembayaran
-$query = mysqli_query($koneksi, "SELECT * FROM t_parkir 
-    JOIN t_jenis_kendaraan ON t_parkir.id_jenis = t_jenis_kendaraan.id_jenis
-    JOIN t_user ON t_parkir.id_user = t_user.id_user
-    JOIN t_pembayaran ON t_parkir.id_parkir = t_pembayaran.id_parkir
-    WHERE t_parkir.id_parkir = '$id_parkir'");
+// 2. Query: Kita HAPUS "JOIN t_user" dari query ini.
+// Kita hanya ambil data parkir, jenis kendaraan, dan pembayarannya saja.
+$query = mysqli_query($koneksi, "SELECT p.*, jk.nama_jenis, pb.metode_pembayaran, pb.jumlah_bayar, pb.kembalian, pb.waktu_bayar 
+    FROM t_parkir p
+    JOIN t_jenis_kendaraan jk ON p.id_jenis = jk.id_jenis
+    JOIN t_pembayaran pb ON p.id_parkir = pb.id_parkir
+    WHERE p.id_parkir = '$id_parkir'");
+
 $data = mysqli_fetch_array($query);
+
+// 3. LOGIKA PENETAPAN NAMA PETUGAS
+// Karena kamu login sebagai Petugas1, maka $_SESSION['nama'] harusnya berisi 'Petugas1'.
+// Kita pakai variabel ini untuk ditampilkan di struk.
+if (isset($_SESSION['username']) && !empty($_SESSION['username'])) {
+    $nama_petugas = $_SESSION['username'];
+} else {
+    // Jika session luput/kosong, kita kasih fallback agar tidak kosong melompong
+    $nama_petugas = "Petugas Lapangan"; 
+}
 ?>
 
 <!DOCTYPE html>
@@ -68,7 +80,9 @@ $data = mysqli_fetch_array($query);
             <div class="info-row"><span>Plat Nomor :</span> <span><?= $data['plat_nomor']; ?></span></div>
             <div class="info-row"><span>Waktu Masuk :</span> <span><?= $data['waktu_masuk']; ?></span></div>
             <div class="info-row"><span>Waktu Keluar :</span> <span><?= $data['waktu_keluar']; ?></span></div>
-            <div class="info-row"><span>Petugas :</span> <span><?= $data['nama']; ?></span></div>
+            
+            <div class="info-row"><span>Petugas :</span> <span><?= $nama_petugas; ?></span></div>
+            
             <div class="info-row"><span>Jenis Transaksi :</span> <span><?= $data['metode_pembayaran']; ?></span></div>
             
             <div class="line-dashed"></div>
