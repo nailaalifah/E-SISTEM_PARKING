@@ -302,8 +302,9 @@
     $res = mysqli_fetch_assoc($q_ringkasan);
 
     // Query untuk Tabel (JOIN ke t_parkir dan t_jenis_kendaraan)
-    $sql_tabel = "SELECT p.*, pk.plat_nomor, j.nama_jenis 
+    $sql_tabel = "SELECT p.*, pk.plat_nomor, j.nama_jenis, u.nama
                   FROM t_pembayaran p 
+                  LEFT JOIN t_user u ON p.id_parkir = u.nama
                   LEFT JOIN t_parkir pk ON p.id_parkir = pk.id_parkir 
                   LEFT JOIN t_jenis_kendaraan j ON pk.id_jenis = j.id_jenis
                   $where_clause ORDER BY p.id_pembayaran DESC";
@@ -379,8 +380,6 @@
                     <th>bayar</th>
                     <th>Kembalian</th>
                     <th>Waktu Bayar</th>
-                    <th>Petugas</th>
-                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -400,8 +399,6 @@
                             <td>Rp <?= number_format($row['jumlah_bayar'], 0, ',', '.') ?></td>
                             <td>Rp <?= number_format($row['kembalian'], 0, ',', '.') ?></td>
                             <td><?= date('H.i', strtotime($row['waktu_bayar'])) ?></td>
-                            <td>Admin</td>
-                            <td><a href="detail.php?id=<?= $row['id_pembayaran'] ?>" class="btn-action">Detail</a></td>
                         </tr>
                     <?php endwhile;
                 } else { ?>
@@ -415,11 +412,8 @@
         <div class="table-footer">
             <div style="display:flex; gap:10px;">
                 <a href="export_pdf.php?tgl_mulai=<?= $tgl_mulai ?>&tgl_selesai=<?= $tgl_selesai ?>&metode=<?= $metode ?>" class="btn-action">
-                    <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                    <i class="bi bi-file-earmark-pdf"></i> Export PDF/Print
                 </a>
-                <button onclick="window.print()" class="btn-action">
-                    <i class="bi bi-printer"></i> Print
-                </button>
             </div>
         </div>
     </div>

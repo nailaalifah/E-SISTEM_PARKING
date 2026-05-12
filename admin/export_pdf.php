@@ -67,7 +67,7 @@ $data = mysqli_query($koneksi, $sql_tabel);
             </tr>
             <?php endwhile; ?>
             <tr>
-                <th colspan="5">TOTAL PEMASUKAN BERSIH</th>
+                <th colspan="6">TOTAL PEMASUKAN BERSIH</th>
                 <th colspan="3">Rp <?= number_format($total,0,',','.') ?></th>
             </tr>
         </tbody>
