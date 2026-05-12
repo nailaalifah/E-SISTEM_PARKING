@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Parking System</title>
+    <title>E-Parking System - Login</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <style>
         :root {
             --primary-yellow: #FFDE42;
@@ -37,7 +40,7 @@
         }
 
         .logo-box.move-to-card img {
-            transform: translateY(-130px) scale(0.5);
+            transform: translateY(-135px) scale(0.6);
         }
 
         /* --- LOGIN CARD --- */
@@ -59,7 +62,8 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
-        .logo-space { height: 70px; }
+        /* Ruang logo diperlebar agar tidak menabrak judul saat logo diturunkan */
+        .logo-space { height: 50px; } 
         .login-card h2 { font-size: 1.1rem; margin-bottom: 25px; font-weight: bold; }
 
         .form-group { text-align: left; margin-bottom: 20px; }
@@ -71,7 +75,6 @@
             position: relative;
         }
 
-        /* INPUT SETTINGS */
         .input-container input {
             flex: 1;
             padding: 12px 15px;
@@ -83,24 +86,26 @@
             outline: none;
         }
 
-        /* Padding supaya tulisan tidak ketutup icon */
-        .input-user { padding-left: 35px !important; }
-        .input-pass { padding-right: 35px !important; }
+        .input-user { padding-left: 50px !important; }
+        .input-pass { padding-right: 50px !important; }
 
-        /* ICON SETTINGS (Menggunakan Foto Sendiri) */
-        .custom-icon {
-            width: 45px;
+        .bi-icon {
+            background-color: white;
+            color: black;
+            width: 45px; 
             height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             border-radius: 50%;
-            object-fit: cover;
+            font-size: 1.4rem;
             position: relative;
             z-index: 2;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            background: #ccc; /* fallback warna */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
-        .icon-left { margin-right: -25px; }
-        .icon-right { margin-left: -25px; }
+        .icon-left { margin-right: -45px; left: -5px; }
+        .icon-right { margin-left: -45px; right: -5px; }
 
         .btn-login {
             background: #1B0C0C;
@@ -111,7 +116,11 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
+            width: 100%;
+            transition: transform 0.2s;
         }
+
+        .btn-login:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -123,7 +132,7 @@
     </div>
 
     <div id="login-wrapper">
-        <div class="login-card">s
+        <div class="login-card">
             <div class="logo-space"></div>
             <h2>HALAMAN LOGIN</h2>
             
@@ -131,8 +140,10 @@
                 <div class="form-group">
                     <label>Username</label>
                     <div class="input-container">
-                        <img src="user-icon.png" class="custom-icon icon-left" alt="User">
-                        <input type="text" name="username" class="input-user" placeholder="Username..." required>
+                        <div class="bi-icon icon-left">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <input type="text" name="username" class="input-user" placeholder="Username..." required autofocus>
                     </div>
                 </div>
 
@@ -140,11 +151,13 @@
                     <label>Password</label>
                     <div class="input-container">
                         <input type="password" name="password" class="input-pass" placeholder="Password..." required>
-                        <img src="lock-icon.png" class="custom-icon icon-right" alt="Lock">
+                        <div class="bi-icon icon-right">
+                            <i class="bi bi-lock-fill"></i>
+                        </div>
                     </div>
                 </div>
 
-                <button type="submit" class="btn-login">Login</button>
+                <button type="submit" class="btn-login">LOGIN</button>
             </form>
         </div>
     </div>
@@ -161,7 +174,7 @@
 
                 setTimeout(() => {
                     splash.style.display = "none";
-                    document.querySelector('.logo-space').innerHTML = '<img src="logo.png" style="width:90px; margin-top:-60px">';
+                    document.querySelector('.logo-space').innerHTML = '<img src="logo.png" style="width:110px; margin-top:-10px">';
                 }, 1000); 
             }, 1000);
         };
