@@ -2,7 +2,7 @@
 session_start();
 include '../koneksi.php';
 
-$kode = $_GET['kode_tiket'];
+$kode = isset($_GET['kode_tiket']) ? $_GET['kode_tiket'] : '';
 
 // Ambil data parkir berdasarkan kode_tiket atau qr_code
 $query = mysqli_query($koneksi, "SELECT p.*, j.nama_jenis, j.tarif 
@@ -16,16 +16,15 @@ if (!$d) {
     exit;
 }
 
-// Cek jika sudah keluar sebelumnya
 if ($d['status'] == 'keluar') {
     echo "<script>alert('Kendaraan ini sudah melakukan pembayaran!'); window.location='index.php';</script>";
     exit;
 }
 
-// Hitung Durasi & Total (Contoh: tarif flat per masuk)
+// Hitung Durasi & Total
 $waktu_masuk = new DateTime($d['waktu_masuk']);
-$waktu_keluar = new DateTime(); // Waktu sekarang
-$total_bayar = $d['tarif']; 
+$waktu_keluar = new DateTime(); // Tambahkan ini untuk menampilkan waktu saat ini
+$total_bayar = (int)$d['tarif'];
 ?>
 
 <!DOCTYPE html>
@@ -69,30 +68,34 @@ $total_bayar = $d['tarif'];
                 <div class="label-data">Plat Nomor :</div>
                 <input type="text" class="input-read" value="<?= $d['plat_nomor'] ?>" readonly>
             </div>
-            <div class="row-data">
+             <div class="row-data">
                 <div class="label-data">Waktu Masuk :</div>
                 <input type="text" class="input-read" value="<?= $d['waktu_masuk'] ?>" readonly>
             </div>
-            <div class="row-data">
+             <div class="row-data">
                 <div class="label-data">Waktu Keluar :</div>
                 <input type="text" class="input-read" value="<?= $waktu_keluar->format('Y-m-d H:i:s') ?>" readonly>
             </div>
+
             <div class="row-data">
                 <div class="label-data">Jenis Transaksi :</div>
-                <select name="metode_pembayaran" class="input-edit" required>
+                <select name="metode_pembayaran" id="metode" class="input-edit" onchange="cekMetode()" required>
                     <option value="">Pilih metode pembayaran...</option>
                     <option value="Tunai">Tunai</option>
                     <option value="QRIS">QRIS</option>
                 </select>
             </div>
+
             <div class="row-data">
                 <div class="label-data">Total :</div>
-                <input type="text" class="input-read" value="<?= number_format($total_bayar) ?>" readonly>
+                <input type="text" class="input-read" value="<?= number_format($total_bayar, 0, ',', '.') ?>" readonly>
             </div>
+
             <div class="row-data">
                 <div class="label-data">Bayar :</div>
                 <input type="number" name="jumlah_bayar" id="bayar" class="input-edit" placeholder="Masukkan jumlah pembayaran" oninput="hitungKembali()" required>
             </div>
+
             <div class="row-data">
                 <div class="label-data">Kembali :</div>
                 <input type="text" id="kembalian" class="input-read" value="0" readonly>
@@ -104,11 +107,31 @@ $total_bayar = $d['tarif'];
 </div>
 
 <script>
+// Gabungkan semua fungsi di satu tempat agar rapi
 function hitungKembali() {
-    let total = <?= $total_bayar ?>;
-    let bayar = document.getElementById('bayar').value;
-    let kembali = bayar - total;
+    const total = parseInt("<?= $total_bayar ?>") || 0;
+    const bayarInput = document.getElementById('bayar');
+    const bayar = parseInt(bayarInput.value) || 0;
+    
+    const kembali = bayar - total;
     document.getElementById('kembalian').value = kembali > 0 ? kembali : 0;
+}
+
+function cekMetode() {
+    const metode = document.getElementById('metode').value;
+    const total = parseInt("<?= $total_bayar ?>") || 0;
+    const inputBayar = document.getElementById('bayar');
+    const inputKembali = document.getElementById('kembalian');
+
+    if (metode === 'QRIS') {
+        inputBayar.value = total;
+        inputBayar.readOnly = true;
+        inputKembali.value = 0;
+    } else {
+        inputBayar.value = '';
+        inputBayar.readOnly = false;
+        inputKembali.value = 0;
+    }
 }
 </script>
 

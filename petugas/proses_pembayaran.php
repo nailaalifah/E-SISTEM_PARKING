@@ -2,12 +2,17 @@
 session_start();
 include '../koneksi.php';
 
+// TAMBAHKAN BARIS INI UNTUK SETTING WAKTU INDONESIA (WIB)
+date_default_timezone_set('Asia/Jakarta');
+
 if (isset($_POST['konfirmasi'])) {
     $id_parkir = $_POST['id_parkir'];
     $total_bayar = $_POST['total_bayar'];
-    $metode = $_POST['metode_pembayaran'];
+    $metode = $_POST['metode_pembayaran'];  
     $jumlah_bayar = $_POST['jumlah_bayar'];
     $kembalian = $jumlah_bayar - $total_bayar;
+    
+    // Sekarang $waktu_keluar akan mengikuti jam WIB (Jakarta)
     $waktu_keluar = date('Y-m-d H:i:s');
 
     // 1. Update tabel t_parkir
@@ -25,6 +30,6 @@ if (isset($_POST['konfirmasi'])) {
 
     if ($upd && $ins) {
         echo "<script>alert('Pembayaran Berhasil!'); window.location='index.php';</script>";
-        // Nanti di sini kita arahkan ke cetak_struk_keluar.php
     }
 }
+?>

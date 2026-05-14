@@ -2,6 +2,9 @@
 session_start();
 include '../koneksi.php';
 
+// TAMBAHKAN BARIS INI AGAR WAKTU SESUAI INDONESIA (WIB)
+date_default_timezone_set('Asia/Jakarta');
+
 // TOTAL HARI INI
 $q_total = mysqli_query($koneksi, "
     SELECT COUNT(*) as total 
