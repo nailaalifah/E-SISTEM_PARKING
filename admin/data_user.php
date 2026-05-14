@@ -15,6 +15,9 @@ body{background:#e5e5e5;}
 --hijau1:#2f4f1e;
 --hijau2:#6c8c4c;
 --kuning:#f7d63b;
+--card1:#7ea567;
+--card2:#3d6b3a;
+--header:#e8d98b;
 }
 
 /* SIDEBAR */
