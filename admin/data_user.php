@@ -20,15 +20,43 @@ body{background:#e5e5e5;}
 --header:#e8d98b;
 }
 
+
 /* SIDEBAR */
-.sidebar{
-width:220px;height:100vh;position:fixed;
-background:linear-gradient(var(--hijau1),var(--hijau2));
-color:white;padding-top:20px;
-}
-.sidebar h2{text-align:center;margin-bottom:30px;}
-.sidebar a{display:block;padding:15px;color:white;text-decoration:none;}
-.sidebar a.active{background:var(--kuning);color:black;border-radius:20px 0 0 20px;}
+    .sidebar {
+        width: 220px;
+        height: 100vh;
+        position: fixed;
+        background: linear-gradient(to bottom, var(--sidebar-green), var(--sidebar-light));
+        color: white;
+        padding-top: 20px;
+        z-index: 100;
+    }
+
+    .sidebar h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 20px;
+    }
+
+    .sidebar a {
+        display: block;
+        padding: 15px 20px;
+        color: white;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .sidebar a.active {
+        background: var(--active-yellow);
+        color: black;
+        border-radius: 25px 0 0 25px;
+        margin-left: 10px;
+        font-weight: bold;
+    }
+
+    .sidebar a i {
+        margin-right: 10px;
+    }
 
 /* MAIN */
 .main{margin-left:220px;}
