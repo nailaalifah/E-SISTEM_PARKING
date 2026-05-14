@@ -40,6 +40,26 @@ align-items:center;
 font-size:24px;font-weight:bold;
 }
 
+/* HEADER */
+.header{
+    background:#e8d98b;
+    border-top:5px solid black;
+    padding:15px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.header-title{
+    font-size:26px;
+    font-weight:bold;
+}
+
+.header-logo{
+    width:30px;
+}
+
 /* BUTTON */
 .btn-tambah{
 background:var(--kuning);
@@ -104,7 +124,10 @@ text-decoration:none;
 </div>
 
 <div class="main">
-<div class="header">Data User</div>
+<div class="header">
+    <div class="header-title">Data User</div>
+    <img src="../logo.png" class="header-logo">
+</div>
 
 <a href="tambah_user.php" class="btn-tambah">+ Tambah User</a>
 
