@@ -100,6 +100,26 @@ while ($d = mysqli_fetch_assoc($q)) {
             margin-left: 220px;
         }
 
+        /* HEADER */
+        .header {
+            background: linear-gradient(to right, #FFDE42, #ffffff);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header-title {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .header-logo {
+            width: 50px;
+        }
+
         .header {
             background: var(--header);
             padding: 15px 25px;
