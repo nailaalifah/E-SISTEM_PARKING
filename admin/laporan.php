@@ -120,16 +120,6 @@ while ($d = mysqli_fetch_assoc($q)) {
             width: 50px;
         }
 
-        .header {
-            background: var(--header);
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
         /* FILTER */
         .filter {
             background: #fff3a0;
@@ -262,10 +252,10 @@ while ($d = mysqli_fetch_assoc($q)) {
     <!-- MAIN -->
     <div class="main">
 
-        <div class="header">
-            Data Laporan
-            <img src="../logo.png" width="40">
-        </div>
+     <div class="header">
+        <div class="header-title">Data Laporan</div>
+        <img src="../logo.png" class="header-logo">
+    </div>
 
         <!-- FILTER -->
         <form class="filter" method="GET">
