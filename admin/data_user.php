@@ -41,23 +41,23 @@ font-size:24px;font-weight:bold;
 }
 
 /* HEADER */
-.header{
-    background:#e8d98b;
-    border-top:5px solid black;
-    padding:15px 25px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:30px;
+.header {
+    background: linear-gradient(to right, #FFDE42, #ffffff);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
 }
 
-.header-title{
-    font-size:26px;
-    font-weight:bold;
+.header-title {
+    font-size: 26px;
+    font-weight: bold;
 }
 
-.header-logo{
-    width:30px;
+.header-logo {
+    width: 50px;
 }
 
 /* BUTTON */
