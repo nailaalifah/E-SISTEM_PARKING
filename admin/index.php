@@ -88,8 +88,10 @@ $data = mysqli_query($koneksi, "
 
 <div class="table-container">
     <h3>Riwayat Transaksi Hari Ini</h3>
+    <br>
     <p style="margin-top: -10px; font-size: 14px; color: #666;">Menampilkan data parkir terbaru per tanggal <?= date('d-m-Y'); ?>.</p>
-
+    </br>
+    
     <table>
         <tr>
             <th>ID</th>
