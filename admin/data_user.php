@@ -15,17 +15,48 @@ body{background:#e5e5e5;}
 --hijau1:#2f4f1e;
 --hijau2:#6c8c4c;
 --kuning:#f7d63b;
+--card1:#7ea567;
+--card2:#3d6b3a;
+--header:#e8d98b;
 }
 
+
 /* SIDEBAR */
-.sidebar{
-width:220px;height:100vh;position:fixed;
-background:linear-gradient(var(--hijau1),var(--hijau2));
-color:white;padding-top:20px;
-}
-.sidebar h2{text-align:center;margin-bottom:30px;}
-.sidebar a{display:block;padding:15px;color:white;text-decoration:none;}
-.sidebar a.active{background:var(--kuning);color:black;border-radius:20px 0 0 20px;}
+    .sidebar {
+        width: 220px;
+        height: 100vh;
+        position: fixed;
+        background: linear-gradient(to bottom, var(--sidebar-green), var(--sidebar-light));
+        color: white;
+        padding-top: 20px;
+        z-index: 100;
+    }
+
+    .sidebar h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 20px;
+    }
+
+    .sidebar a {
+        display: block;
+        padding: 15px 20px;
+        color: white;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .sidebar a.active {
+        background: var(--active-yellow);
+        color: black;
+        border-radius: 25px 0 0 25px;
+        margin-left: 10px;
+        font-weight: bold;
+    }
+
+    .sidebar a i {
+        margin-right: 10px;
+    }
 
 /* MAIN */
 .main{margin-left:220px;}
@@ -35,6 +66,26 @@ padding:15px 25px;
 display:flex;justify-content:space-between;
 align-items:center;
 font-size:24px;font-weight:bold;
+}
+
+/* HEADER */
+.header {
+    background: linear-gradient(to right, #FFDE42, #ffffff);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.header-title {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.header-logo {
+    width: 50px;
 }
 
 /* BUTTON */
@@ -101,7 +152,10 @@ text-decoration:none;
 </div>
 
 <div class="main">
-<div class="header">Data User</div>
+<div class="header">
+    <div class="header-title">Data User</div>
+    <img src="../logo.png" class="header-logo">
+</div>
 
 <a href="tambah_user.php" class="btn-tambah">+ Tambah User</a>
 

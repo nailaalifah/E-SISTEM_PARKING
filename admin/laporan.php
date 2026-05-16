@@ -100,14 +100,24 @@ while ($d = mysqli_fetch_assoc($q)) {
             margin-left: 220px;
         }
 
+        /* HEADER */
         .header {
-            background: var(--header);
-            padding: 15px 25px;
+            background: linear-gradient(to right, #FFDE42, #ffffff);
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 24px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .header-title {
+            font-size: 26px;
             font-weight: bold;
+        }
+
+        .header-logo {
+            width: 50px;
         }
 
         /* FILTER */
@@ -242,10 +252,10 @@ while ($d = mysqli_fetch_assoc($q)) {
     <!-- MAIN -->
     <div class="main">
 
-        <div class="header">
-            Data Laporan
-            <img src="../logo.png" width="40">
-        </div>
+     <div class="header">
+        <div class="header-title">Data Laporan</div>
+        <img src="../logo.png" class="header-logo">
+    </div>
 
         <!-- FILTER -->
         <form class="filter" method="GET">
