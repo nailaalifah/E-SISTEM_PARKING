@@ -1,7 +1,7 @@
 <?php
 include '../koneksi.php';
 $id=$_GET['id'];
-$data=mysqli_query($koneksi,"SELECT * FROM users WHERE id_user='$id'");
+$data=mysqli_query($koneksi,"SELECT * FROM t_user WHERE id_user='$id'");
 $d=mysqli_fetch_array($data);
 ?>
 
@@ -31,8 +31,8 @@ Username<input type="text" name="username" value="<?= $d['username'] ?>">
 Password<input type="text" name="password" value="<?= $d['password'] ?>">
 
 <select name="role">
-<option <?= $d['role']=='Petugas'?'selected':'' ?>>Petugas</option>
-<option <?= $d['role']=='Admin'?'selected':'' ?>>Admin</option>
+<option value="2" <?= $d['role'] == '2' ? 'selected' : '' ?>>Petugas</option>
+<option value="1" <?= $d['role'] == '1' ? 'selected' : '' ?>>Admin</option>
 </select>
 
 <button name="update">Simpan</button>
@@ -41,7 +41,7 @@ Password<input type="text" name="password" value="<?= $d['password'] ?>">
 
 <?php
 if(isset($_POST['update'])){
-mysqli_query($koneksi,"UPDATE users SET 
+mysqli_query($koneksi,"UPDATE t_user SET 
 nama='$_POST[nama]',
 username='$_POST[username]',
 password='$_POST[password]',

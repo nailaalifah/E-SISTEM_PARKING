@@ -9,15 +9,15 @@
 
 <style>
 *{font-family:'Inter';margin:0;padding:0;box-sizing:border-box;}
-body{background:#e5e5e5;}
+body{background:#ffffff;} /* REVISI: Mengubah background body menjadi putih polos */
 
 :root{
---hijau1:#2f4f1e;
---hijau2:#6c8c4c;
---kuning:#f7d63b;
---card1:#7ea567;
---card2:#3d6b3a;
---header:#e8d98b;
+--hijau1:#346739;        /* REVISI: Hijau tua sidebar utama */
+--hijau2:#79AE6F;        /* REVISI: Hijau muda gradasi sidebar */
+--kuning:#FFDE42;        /* REVISI: Kuning cerah active menu & button */
+--table-header:#4D5D30;   /* REVISI: Hijau gelap header tabel */
+--table-row-odd:#87A971;  /* REVISI: Hijau baris ganjil */
+--table-row-even:#A2C18E; /* REVISI: Hijau baris genap */
 }
 
 
@@ -26,7 +26,7 @@ body{background:#e5e5e5;}
         width: 220px;
         height: 100vh;
         position: fixed;
-        background: linear-gradient(to bottom, var(--sidebar-green), var(--sidebar-light));
+        background: linear-gradient(to bottom, var(--hijau1), var(--hijau2));
         color: white;
         padding-top: 20px;
         z-index: 100;
@@ -47,7 +47,7 @@ body{background:#e5e5e5;}
     }
 
     .sidebar a.active {
-        background: var(--active-yellow);
+        background: var(--kuning);
         color: black;
         border-radius: 25px 0 0 25px;
         margin-left: 10px;
@@ -60,13 +60,6 @@ body{background:#e5e5e5;}
 
 /* MAIN */
 .main{margin-left:220px;}
-.header{
-background:#e8d98b;
-padding:15px 25px;
-display:flex;justify-content:space-between;
-align-items:center;
-font-size:24px;font-weight:bold;
-}
 
 /* HEADER */
 .header {
@@ -108,22 +101,26 @@ text-align:center;
 }
 
 .table th{
-background:#4a5d2c;
+background:var(--table-header); /* REVISI: Warna header tabel laporan */
 color:white;padding:12px;
 }
 
 .table td{
 padding:10px;
+font-size: 14px;
 }
 
-.table tr:nth-child(odd){background:#8fab75;}
-.table tr:nth-child(even){background:#a8c294;}
+/* REVISI: Mengubah warna baris tabel agar sama persis dengan halaman laporan/jenis kendaraan */
+.table tr:nth-child(odd) td {background:var(--table-row-odd);}
+.table tr:nth-child(even) td {background:var(--table-row-even);}
 
 /* BADGE ROLE */
 .badge{
 background:#f4e7b6;
 padding:5px 10px;
 border-radius:10px;
+font-weight: bold;
+font-size: 12px;
 }
 
 /* ACTION */
@@ -160,6 +157,7 @@ text-decoration:none;
 <a href="tambah_user.php" class="btn-tambah">+ Tambah User</a>
 
 <table class="table">
+<thead>
 <tr>
 <th>Nama</th>
 <th>Username</th>
@@ -167,6 +165,8 @@ text-decoration:none;
 <th>Role</th>
 <th>Opsi</th>
 </tr>
+</thead>
+<tbody>
 
 <?php
 $data = mysqli_query($koneksi,"SELECT * FROM t_user");
@@ -177,7 +177,9 @@ while($d=mysqli_fetch_array($data)){
 <td><?= $d['nama'] ?></td>
 <td><?= $d['username'] ?></td>
 <td><?= $d['password'] ?></td>
-<td><span class="badge"><?= $d['role'] ?></span></td>
+<td>
+    <span class="badge"><?= $d['role'] == '1' ? 'Admin' : 'Petugas' ?></span>
+</td>
 <td>
 <a href="edit_user.php?id=<?= $d['id_user'] ?>" class="btn-icon edit"><i class="bi bi-pencil"></i></a>
 <a href="hapus_user.php?id=<?= $d['id_user'] ?>" class="btn-icon hapus"><i class="bi bi-trash"></i></a>
@@ -185,6 +187,7 @@ while($d=mysqli_fetch_array($data)){
 </tr>
 
 <?php } ?>
+</tbody>
 </table>
 
 </div>
