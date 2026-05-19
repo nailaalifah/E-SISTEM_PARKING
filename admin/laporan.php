@@ -14,12 +14,12 @@ $nama_bulan = [
     '09' => 'September', '10' => 'Oktober', '11' => 'November', '12' => 'Desember'
 ];
 
-// QUERY
+// QUERY (REVISI: Mengubah JOIN menjadi LEFT JOIN agar data self-service tetap masuk laporan)
 if ($jenis == 'harian') {
     $q = mysqli_query($koneksi, "
         SELECT p.*, u.nama 
         FROM t_parkir p
-        JOIN t_user u ON p.id_user = u.id_user
+        LEFT JOIN t_user u ON p.id_user = u.id_user
         WHERE DATE(p.waktu_masuk) = '$tanggal'
         ORDER BY p.waktu_masuk DESC
     ");
@@ -27,7 +27,7 @@ if ($jenis == 'harian') {
     $q = mysqli_query($koneksi, "
         SELECT p.*, u.nama 
         FROM t_parkir p
-        JOIN t_user u ON p.id_user = u.id_user
+        LEFT JOIN t_user u ON p.id_user = u.id_user
         WHERE MONTH(p.waktu_masuk) = '$bulan'
         AND YEAR(p.waktu_masuk) = '$tahun'
         ORDER BY p.waktu_masuk DESC
@@ -421,7 +421,9 @@ while ($d = mysqli_fetch_assoc($q)) {
                             <td><?= $d['id_jenis'] ?></td>
                             <td><?= $d['waktu_masuk'] ?></td>
                             <td><?= $d['waktu_keluar'] ?></td>
-                            <td><?= $d['nama'] ?></td>
+                            
+                            <td><?= !empty($d['nama']) ? $d['nama'] : 'Self-Service' ?></td>
+                            
                             <td>Rp <?= number_format($d['total_bayar'], 0, ',', '.') ?></td>
                             <td>
                                 <?php if ($d['waktu_keluar']) { ?>
