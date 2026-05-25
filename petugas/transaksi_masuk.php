@@ -93,6 +93,12 @@ input, select{
     border:none;
     border-radius:10px;
     background:#eee;
+    box-sizing: border-box; /* Biar padding tidak merusak lebar input */
+}
+
+/* TAMBAHAN CSS: Biar otomatis terlihat Caps Lock saat diketik */
+.input-plat {
+    text-transform: uppercase;
 }
 
 button{
@@ -116,7 +122,7 @@ button{
 
 <form method="POST">
 
-<input type="text" name="plat_nomor" placeholder="Plat Nomor" required>
+<input type="text" name="plat_nomor" class="input-plat" placeholder="Plat Nomor (Contoh: H 1234 AB)" oninput="this.value = this.value.toUpperCase()" required>
 
 <select name="id_jenis" required>
 <option value="">Pilih Jenis</option>

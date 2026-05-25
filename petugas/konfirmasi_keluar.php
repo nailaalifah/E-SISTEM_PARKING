@@ -2,6 +2,9 @@
 session_start();
 include '../koneksi.php';
 
+// PASTIKAN TIMEZONE SUDAH WIB
+date_default_timezone_set('Asia/Jakarta');
+
 $kode = isset($_GET['kode_tiket']) ? $_GET['kode_tiket'] : '';
 
 // Ambil data parkir berdasarkan kode_tiket atau qr_code
@@ -21,10 +24,29 @@ if ($d['status'] == 'keluar') {
     exit;
 }
 
-// Hitung Durasi & Total
+// =========================================================================
+// HITUNG LOGIKA MENGINAP DI HALAMAN FORM AGAR TOTAL DYNAMIC
+// =========================================================================
 $waktu_masuk = new DateTime($d['waktu_masuk']);
-$waktu_keluar = new DateTime(); // Tambahkan ini untuk menampilkan waktu saat ini
-$total_bayar = (int)$d['tarif'];
+$waktu_keluar = new DateTime(); // Waktu saat ini (WIB)
+
+$tarif_dasar = (int)$d['tarif'];
+
+// Format tanggal murni (Y-m-d) untuk menghitung selisih hari kalender
+$tgl_masuk_murni = new DateTime($waktu_masuk->format('Y-m-d'));
+$tgl_keluar_murni = new DateTime($waktu_keluar->format('Y-m-d'));
+
+$selisih = $tgl_masuk_murni->diff($tgl_keluar_murni);
+$jumlah_hari_menginap = $selisih->days; 
+
+// Hitung total bayar awal
+$total_bayar = $tarif_dasar;
+
+if ($jumlah_hari_menginap > 0) {
+    // Jika lewat hari, tarif dikalikan jumlah hari menginapnya
+    $total_bayar = $jumlah_hari_menginap * $tarif_dasar;
+}
+// =========================================================================
 ?>
 
 <!DOCTYPE html>
@@ -77,6 +99,13 @@ $total_bayar = (int)$d['tarif'];
                 <input type="text" class="input-read" value="<?= $waktu_keluar->format('Y-m-d H:i:s') ?>" readonly>
             </div>
 
+            <?php if($jumlah_hari_menginap > 0) { ?>
+                <div class="row-data">
+                    <div class="label-data">Keterangan :</div>
+                    <input type="text" class="input-read" style="color: red; font-weight: bold;" value="Menginap <?= $jumlah_hari_menginap ?> Hari (Tarif x <?= $jumlah_hari_menginap ?>)" readonly>
+                </div>
+            <?php } ?>
+
             <div class="row-data">
                 <div class="label-data">Jenis Transaksi :</div>
                 <select name="metode_pembayaran" id="metode" class="input-edit" onchange="cekMetode()" required>
@@ -88,7 +117,7 @@ $total_bayar = (int)$d['tarif'];
 
             <div class="row-data">
                 <div class="label-data">Total :</div>
-                <input type="text" class="input-read" value="<?= number_format($total_bayar, 0, ',', '.') ?>" readonly>
+                <input type="text" class="input-read" value="Rp <?= number_format($total_bayar, 0, ',', '.') ?>" readonly>
             </div>
 
             <div class="row-data">
@@ -107,7 +136,6 @@ $total_bayar = (int)$d['tarif'];
 </div>
 
 <script>
-// Gabungkan semua fungsi di satu tempat agar rapi
 function hitungKembali() {
     const total = parseInt("<?= $total_bayar ?>") || 0;
     const bayarInput = document.getElementById('bayar');
@@ -118,8 +146,8 @@ function hitungKembali() {
 }
 
 function cekMetode() {
-    const metode = document.getElementById('metode').value;
     const total = parseInt("<?= $total_bayar ?>") || 0;
+    const metode = document.getElementById('metode').value;
     const inputBayar = document.getElementById('bayar');
     const inputKembali = document.getElementById('kembalian');
 

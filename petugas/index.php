@@ -2,16 +2,33 @@
 session_start();
 include '../koneksi.php';
 
-// TAMBAHKAN BARIS INI AGAR WAKTU SESUAI INDONESIA (WIB)
+// SETTING WAKTU INDONESIA (WIB)
 date_default_timezone_set('Asia/Jakarta');
 
 // =========================================================================
-// QUERY REVISI: Mengambil data statistik dinamis dikelompokkan per Jenis Kendaraan
+// QUERY PERBAIKAN TOTAL: Statistik Dinamis (Akurat & Mendukung Menginap)
 // =========================================================================
-$q_statis = mysqli_query($koneksi, "SELECT j.id_jenis, j.nama_jenis, j.kapasitas, COUNT(CASE WHEN DATE(p.waktu_masuk) = CURDATE() THEN 1 END) as total_hari_ini, COUNT(CASE WHEN (p.status = 'masuk' OR p.waktu_keluar IS NULL OR p.waktu_keluar = '0000-00-00 00:00:00' OR p.waktu_keluar = '') AND DATE(p.waktu_masuk) = CURDATE() THEN 1 END) as masih_parkir FROM t_jenis_kendaraan j LEFT JOIN t_parkir p ON j.id_jenis = p.id_jenis GROUP BY j.id_jenis");
+$q_statis = mysqli_query($koneksi, "
+    SELECT 
+        j.id_jenis,
+        j.nama_jenis, 
+        j.kapasitas,
+        COUNT(CASE WHEN DATE(p.waktu_masuk) = CURDATE() THEN 1 END) as total_hari_ini,
+        COUNT(CASE WHEN p.status = 'masuk' THEN 1 END) as masih_parkir
+    FROM t_jenis_kendaraan j
+    LEFT JOIN t_parkir p ON j.id_jenis = p.id_jenis
+    GROUP BY j.id_jenis
+");
 
-// DATA HARI INI - Otomatis mencakup data yang baru saja diinput oleh pelanggan
-$data = mysqli_query($koneksi, "SELECT p.*, j.nama_jenis FROM t_parkir p LEFT JOIN t_jenis_kendaraan j ON p.id_jenis = j.id_jenis WHERE DATE(p.waktu_masuk)=CURDATE() ORDER BY p.id_parkir DESC");
+// DATA TABEL RIWAYAT: Hanya kendaraan masuk hari ini ATAU kendaraan lama yang masih parkir
+$data = mysqli_query($koneksi, "
+    SELECT p.*, j.nama_jenis 
+    FROM t_parkir p 
+    LEFT JOIN t_jenis_kendaraan j ON p.id_jenis = j.id_jenis 
+    WHERE DATE(p.waktu_masuk) = CURDATE() 
+    OR p.status = 'masuk'
+    ORDER BY p.id_parkir DESC
+");
 ?>
 
 <!DOCTYPE html>
@@ -117,15 +134,15 @@ tr:nth-child(even) { background: #eee; }
 </div>
 
 <div class="table-container">
-    <h3>Riwayat Transaksi Hari Ini</h3>
-    <p style="margin-top: -10px; font-size: 14px; color: #666;">Monitoring tiket parkir yang diambil secara mandiri oleh pelanggan.</p>
+    <h3>Riwayat Transaksi Aktif & Hari Ini</h3>
+    <p style="margin-top: -10px; font-size: 14px; color: #666;">Monitoring tiket parkir aktif dan yang selesai diproses hari ini.</p>
 
     <table>
         <tr>
             <th>No</th>
             <th>Plat Nomor</th>
             <th>Jenis</th>
-            <th>Waktu</th>
+            <th>Waktu Masuk</th>
             <th>Status</th>
             <th>Opsi</th>
         </tr>
@@ -140,14 +157,14 @@ tr:nth-child(even) { background: #eee; }
                 <td><?= !empty($row['nama_jenis']) ? $row['nama_jenis'] : 'Self-Service' ?></td>
                 <td><?= $row['waktu_masuk']; ?></td>
                 <td>
-                    <?php if($row['status']=='masuk' || empty($row['waktu_keluar']) || $row['waktu_keluar'] == '0000-00-00 00:00:00'){ ?>
+                    <?php if($row['status'] == 'masuk'){ ?>
                         <span class="status-masuk">Parkir</span>
                     <?php } else { ?>
                         <span class="status-keluar">Keluar</span>
                     <?php } ?>
                 </td>
                 <td>
-                    <?php if($row['status']=='masuk' || empty($row['waktu_keluar']) || $row['waktu_keluar'] == '0000-00-00 00:00:00'){ ?>
+                    <?php if($row['status'] == 'masuk'){ ?>
                         <a href="edit_transaksi.php?id=<?= $row['id_parkir'] ?>" class="btn-sm btn-edit">
                             <i class="bi bi-pencil"></i> Edit
                         </a>
@@ -164,7 +181,7 @@ tr:nth-child(even) { background: #eee; }
             <?php } 
         } else { ?>
             <tr>
-                <td colspan="6">Belum ada data transaksi untuk hari ini.</td>
+                <td colspan="6">Belum ada data transaksi aktif.</td>
             </tr>
         <?php } ?>
     </table>

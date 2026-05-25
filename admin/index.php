@@ -2,11 +2,11 @@
 session_start();
 include '../koneksi.php';
 
-// TAMBAHKAN BARIS INI AGAR WAKTU SESUAI INDONESIA (WIB)
+// SETTING WAKTU INDONESIA (WIB)
 date_default_timezone_set('Asia/Jakarta');
 
 // =========================================================================
-// QUERY REVISI: Mengambil data statistik dinamis dikelompokkan per Jenis Kendaraan
+// QUERY PERBAIKAN TOTAL: Statistik Dinamis (Akurat & Mendukung Menginap)
 // =========================================================================
 $q_statis = mysqli_query($koneksi, "
     SELECT 
@@ -14,29 +14,28 @@ $q_statis = mysqli_query($koneksi, "
         j.nama_jenis, 
         j.kapasitas,
         COUNT(CASE WHEN DATE(p.waktu_masuk) = CURDATE() THEN 1 END) as total_hari_ini,
-        COUNT(CASE WHEN (p.waktu_keluar IS NULL OR p.waktu_keluar = '0000-00-00 00:00:00' OR p.waktu_keluar = '') AND DATE(p.waktu_masuk) = CURDATE() THEN 1 END) as masih_parkir
+        COUNT(CASE WHEN p.status = 'masuk' THEN 1 END) as masih_parkir
     FROM t_jenis_kendaraan j
     LEFT JOIN t_parkir p ON j.id_jenis = p.id_jenis
     GROUP BY j.id_jenis
 ");
 
-// PENDAPATAN GLOBAL HARI INI
+// PENDAPATAN GLOBAL HARI INI (Hanya menghitung transaksi yang SELESAI/KELUAR hari ini)
 $q_pendapatan = mysqli_query($koneksi, "
     SELECT SUM(total_bayar) as total 
     FROM t_parkir 
-    WHERE (status='keluar' OR (waktu_keluar IS NOT NULL AND waktu_keluar != '0000-00-00 00:00:00' AND waktu_keluar != '')) 
-    AND DATE(waktu_masuk)=CURDATE()
+    WHERE status = 'keluar' AND DATE(waktu_keluar) = CURDATE()
 ");
 $pendapatan = mysqli_fetch_assoc($q_pendapatan);
 $total_pendapatan = $pendapatan['total'] ?? 0;
 
-// DATA TABEL RIWAYAT HARI INI
+// DATA TABEL RIWAYAT: Hanya kendaraan masuk hari ini ATAU kendaraan lama yang masih parkir
 $data = mysqli_query($koneksi, "
     SELECT p.*, j.nama_jenis 
     FROM t_parkir p
-    LEFT JOIN t_jenis_kendaraan j 
-    ON p.id_jenis = j.id_jenis
+    LEFT JOIN t_jenis_kendaraan j ON p.id_jenis = j.id_jenis
     WHERE DATE(p.waktu_masuk) = CURDATE()
+    OR p.status = 'masuk'
     ORDER BY p.id_parkir DESC
 ");
 ?>
@@ -81,7 +80,6 @@ $data = mysqli_query($koneksi, "
         
         <div class="sekat-container">
             <?php 
-            // Loop data jenis kendaraan untuk membuat sekat otomatis
             mysqli_data_seek($q_statis, 0); 
             while($row_statis = mysqli_fetch_assoc($q_statis)){ 
             ?>
@@ -112,16 +110,15 @@ $data = mysqli_query($koneksi, "
 
     <div class="card" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <i class="bi bi-cash-stack card-icon"></i>
-        <h3 style="font-size: 16px; margin-bottom: 15px;">Total Pendapatan (Semua Jenis)</h3>
+        <h3 style="font-size: 16px; margin-bottom: 15px;">Total Pendapatan (Hari Ini)</h3>
         <div class="angka" style="font-size: 32px; color: #346739;">Rp <?= number_format($total_pendapatan,0,',','.') ?></div>
     </div>
 
 </div>
 
 <div class="table-container">
-    <h3>Riwayat Transaksi Hari Ini</h3>
-    <br>
-    <p style="margin-top: -10px; font-size: 14px; color: #666;">Menampilkan data parkir terbaru per tanggal <?= date('d-m-Y'); ?>.</p>
+    <h3>Riwayat Transaksi Aktif & Hari Ini</h3>
+    <p style="margin-top: -10px; font-size: 14px; color: #666;">Menampilkan kendaraan aktif (termasuk menginap) dan transaksi selesai hari ini.</p>
     
     <table>
         <tr>
@@ -129,7 +126,8 @@ $data = mysqli_query($koneksi, "
             <th>Kode Tiket</th>
             <th>Plat</th>
             <th>Jenis</th>
-            <th>Waktu</th>
+            <th>Waktu Masuk</th>
+            <th>Waktu Keluar</th>
             <th>Status</th>
         </tr>
 
@@ -140,13 +138,10 @@ $data = mysqli_query($koneksi, "
                 <td><?= $row['kode_tiket'] ?></td>
                 <td><?= $row['plat_nomor'] ?></td>
                 <td><?= !empty($row['nama_jenis']) ? $row['nama_jenis'] : 'Self-Service' ?></td>
+                <td><?= $row['waktu_masuk'] ?></td>
+                <td><?= ($row['status'] == 'keluar' && !empty($row['waktu_keluar'])) ? $row['waktu_keluar'] : '-' ?></td>
                 <td>
-                    <?= $row['waktu_masuk'] ?> 
-                    <?= ($row['waktu_keluar'] != '0000-00-00 00:00:00' && !empty($row['waktu_keluar'])) ? "- ".$row['waktu_keluar'] : "" ?>
-                </td>
-                <td>
-                    <?php 
-                    if($row['status'] == 'masuk' || $row['waktu_keluar'] == '0000-00-00 00:00:00' || empty($row['waktu_keluar'])){ ?>
+                    <?php if($row['status'] == 'masuk'){ ?>
                         <span class="status-masuk">Parkir</span>
                     <?php } else { ?>
                         <span class="status-keluar">Keluar</span>
@@ -156,7 +151,7 @@ $data = mysqli_query($koneksi, "
             <?php } ?>
         <?php } else { ?>
             <tr>
-                <td colspan="6">Belum ada data transaksi untuk hari ini.</td>
+                <td colspan="7">Belum ada data transaksi aktif.</td>
             </tr>
         <?php } ?>
     </table>
