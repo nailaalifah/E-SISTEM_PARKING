@@ -18,12 +18,33 @@
         input,select{
         width:100%;padding:10px;margin:10px 0;
         border:none;border-radius:5px;
+        box-sizing: border-box; /* Mencegah input melebar keluar container */
+        }
+
+        /* Mengatur posisi tombol simpan dan kembali agar sejajar ke samping */
+        .btn-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        }
+
+        button, .btn-kembali{
+        padding:10px 20px;border:none;
+        border-radius:5px;
+        font-size: 14px;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        display: inline-block;
         }
 
         button{
         background:#2f4f1e;color:white;
-        padding:10px;border:none;
-        border-radius:5px;
+        }
+
+        /* Warna abu-abu untuk tombol kembali sesuai dengan tema halaman cetakmu */
+        .btn-kembali{
+        background:#ccc;color:black;
         }
         </style>
         </head>
@@ -34,17 +55,20 @@
     <h2>Tambah User Baru</h2>
 
     <form method="POST">
-    Nama<input type="text" name="nama">
-    Username<input type="text" name="username">
-    Password<input type="text" name="password">
+    Nama<input type="text" name="nama" required>
+    Username<input type="text" name="username" required>
+    Password<input type="text" name="password" required>
 
     Role
-    <select name="role">
+    <select name="role" required>
     <option value="2">Petugas</option>
     <option value="1">Admin</option>
     </select>
 
-    <button name="simpan">Simpan</button>
+    <div class="btn-group">
+        <button name="simpan">Simpan</button>
+        <a href="data_user.php" class="btn-kembali">Kembali</a>
+    </div>
     </form>
     </div>
 
