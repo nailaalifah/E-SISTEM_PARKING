@@ -3,14 +3,18 @@ include '../koneksi.php';
 
 $id = $_GET['id'];
 
+// PERBAIKAN QUERY: Menggunakan LEFT JOIN agar data Self-Service tetap muncul
 $data = mysqli_query($koneksi, "
     SELECT p.*, j.nama_jenis 
     FROM t_parkir p
-    JOIN t_jenis_kendaraan j ON p.id_jenis = j.id_jenis
+    LEFT JOIN t_jenis_kendaraan j ON p.id_jenis = j.id_jenis
     WHERE p.id_parkir='$id'
 ");
 
 $d = mysqli_fetch_assoc($data);
+
+// Antisipasi jika kode_tiket atau qr_code kosong di database
+$qr_data = !empty($d['qr_code']) ? $d['qr_code'] : $d['kode_tiket'];
 ?>
 
 <!DOCTYPE html>
@@ -91,15 +95,15 @@ button{
 <h3>E-Parking</h3>
 
 <div class="qr">
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=<?= $d['qr_code'] ?>">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=<?= urlencode($qr_data) ?>" alt="QR Code">
 </div>
 
 <div class="line"></div>
 
 <div class="data">
-<p><b>Kode :</b> <?= $d['kode_tiket'] ?></p>
+<p><b>Kode :</b> <?= !empty($d['kode_tiket']) ? $d['kode_tiket'] : 'PKR-'.$d['id_parkir'] ?></p>
 <p><b>Plat :</b> <?= $d['plat_nomor'] ?></p>
-<p><b>Jenis :</b> <?= $d['nama_jenis'] ?></p>
+<p><b>Jenis :</b> <?= !empty($d['nama_jenis']) ? $d['nama_jenis'] : 'Self-Service' ?></p>
 <p><b>Masuk :</b> <?= $d['waktu_masuk'] ?></p>
 </div>
 
