@@ -16,6 +16,11 @@
         /* Form Layout */
         .form-card { background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); max-width: 500px; width: 90%; }
         .btn-ambil { background: #3E4E35; color: white; border-radius: 10px; padding: 10px 30px; border: none; }
+
+        /* TAMBAHAN CSS: Agar visual huruf otomatis Caps Lock saat diketik */
+        .input-capslock {
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body class="d-flex align-items-center justify-content-center">
@@ -30,7 +35,7 @@
         <form action="proses_tiket.php" method="POST">
             <div class="mb-3 text-start">
                 <label class="fw-bold">Plat Nomor</label>
-                <input type="text" name="plat_nomor" class="form-control bg-light border-0" placeholder="Contoh: H 1234 AB" required>
+                <input type="text" name="plat_nomor" class="form-control bg-light border-0 input-capslock" placeholder="Contoh: H 1234 AB" oninput="this.value = this.value.toUpperCase()" required>
             </div>
             <div class="mb-4 text-start">
                 <label class="fw-bold">Jenis Kendaraan</label>
