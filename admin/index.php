@@ -2,12 +2,8 @@
 session_start();
 include '../koneksi.php';
 
-// SETTING WAKTU INDONESIA (WIB)
 date_default_timezone_set('Asia/Jakarta');
 
-// =========================================================================
-// QUERY PERBAIKAN TOTAL: Statistik Dinamis (Akurat & Mendukung Menginap)
-// =========================================================================
 $q_statis = mysqli_query($koneksi, "
     SELECT 
         j.id_jenis,
@@ -118,8 +114,10 @@ $data = mysqli_query($koneksi, "
 
 <div class="table-container">
     <h3>Riwayat Transaksi Aktif & Hari Ini</h3>
+    <br>
     <p style="margin-top: -10px; font-size: 14px; color: #666;">Menampilkan kendaraan aktif (termasuk menginap) dan transaksi selesai hari ini.</p>
-    
+    </br>
+
     <table>
         <tr>
             <th>ID</th>
